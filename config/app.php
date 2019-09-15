@@ -63,7 +63,7 @@ return [
         ],
         'mike-buonomo' => [
             'name' => 'Mike',
-            'url' => env('APP_URL_MIKE_BUONOMO', 'https://mikebuonomo.com'),
+            'url' => env('APP_URL_MIKE_BUONOMO', 'https://mike.buonomo.net'),
         ],
         'pong' => [
             'name' => 'Pong',
