@@ -11,10 +11,10 @@
 |
 */
 
-Route::get('/', 'HomeController@welcome');
+Route::get('/', 'HomeController@index');
 
 Auth::routes(['verify' => true]);
 
 Route::middleware(['verified'])->group(function () {
-    Route::get('/home', 'HomeController@index')->name('home');
+    Route::get('/dashboard', 'HomeController@dashboard')->name('dashboard');
 });
