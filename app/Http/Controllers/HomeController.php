@@ -13,7 +13,17 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('verified');
+        // $this->middleware('verified');
+    }
+
+    /**
+     * Show the landing page.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function welcome()
+    {
+        return view('welcome');
     }
 
     /**
