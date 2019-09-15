@@ -57,10 +57,26 @@ return [
     'asset_url' => env('ASSET_URL', null),
 
     'sites' => [
-        'buonomo' => env('APP_URL_BUONOMO', 'https://buonomo.net'),
-        'mike-buonomo' => env('APP_URL_BUONOMO', 'https://mikebuonomo.com'),
-        'pong' => env('APP_URL_PONG', 'https://pong.mikebuonomo.com'),
-        'brick-breaker' => env('APP_URL_BRICK_BREAKER', 'https://brick-breaker.buonomo.net'),
+        'buonomo' => [
+            'name' => 'Buonomo',
+            'url' => env('APP_URL_BUONOMO', 'https://buonomo.net'),
+        ],
+        'mike-buonomo' => [
+            'name' => 'Mike',
+            'url' => env('APP_URL_MIKE_BUONOMO', 'https://mikebuonomo.com'),
+        ],
+        'pong' => [
+            'name' => 'Pong',
+            'url' => env('APP_URL_PONG', 'https://pong.mikebuonomo.com'),
+        ],
+        'brick-breaker' => [
+            'name' => 'Brick Breaker',
+            'url' => env('APP_URL_BRICK_BREAKER', 'https://brick-breaker.buonomo.net'),
+        ],
+        'github' => [
+            'name' => 'GitHub',
+            'url' => env('APP_URL_GITHUB', 'https://github.com/mrb2590'),
+        ],
     ],
 
     /*
