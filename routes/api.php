@@ -13,4 +13,13 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('/users/{user?}', 'UserController@fetch');
+Route::get('/user', 'UserController@fetch');
+Route::patch('/user', 'UserController@store');
+Route::delete('/user', 'UserController@destroy');
+
+Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
+    Route::get('/users/{user?}', 'UserController@fetch');
+    Route::post('/users', 'UserController@store');
+    Route::patch('/users/{user}', 'UserController@store');
+    Route::delete('/users/{user}', 'UserController@destroy');
+});

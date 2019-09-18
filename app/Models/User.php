@@ -55,4 +55,24 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $dates = [
         'created_at', 'updated_at', 'deleted_at', 'email_verified_at',
     ];
+
+    /**
+     * Get the user who created this.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function created_by()
+    {
+        return $this->belongsTo(Folder::class);
+    }
+
+    /**
+     * Get the user who last updated this.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function updated_by()
+    {
+        return $this->belongsTo(Folder::class);
+    }
 }

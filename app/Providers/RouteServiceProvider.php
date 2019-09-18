@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\User;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +27,22 @@ class RouteServiceProvider extends ServiceProvider
         //
 
         parent::boot();
+
+        Route::bind('user', function ($value) {
+            if (strlen($value) == 36) {
+                return User::findOrFail($value);
+            }
+
+            return User::where('username', $value)->firstOrFail();
+        });
+
+        Route::bind('trashed-user', function ($value) {
+            if (strlen($value) == 36) {
+                return User::trashed()->findOrFail($value);
+            }
+
+            return User::trashed()->where('username', $value)->firstOrFail();
+        });
     }
 
     /**

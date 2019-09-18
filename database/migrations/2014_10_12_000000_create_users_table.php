@@ -22,10 +22,22 @@ class CreateUsersTable extends Migration
             $table->string('username', 30)->unique();
             $table->string('password');
             $table->rememberToken();
-            $table->softDeletes();
+            $table->uuid('created_by_id')->nullable();
+            $table->uuid('updated_by_id')->nullable();
             $table->timestamps();
+            $table->softDeletes();
 
             $table->primary('id');
+            $table->foreign('created_by_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('set null')
+                ->onUpdate('cascade');
+            $table->foreign('updated_by_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('set null')
+                ->onUpdate('cascade');
         });
     }
 

@@ -28,6 +28,8 @@ class Bootstrap implements BeforeFirstTestHook, AfterLastTestHook
         $commands = [
             'config:cache',
             'event:cache',
+            'migrate:refresh --seed',
+            'passport:install',
         ];
 
         foreach ($commands as $command) {
@@ -38,5 +40,16 @@ class Bootstrap implements BeforeFirstTestHook, AfterLastTestHook
     public function executeAfterLastTest(): void
     {
         array_map('unlink', glob('bootstrap/cache/*.phpunit.php'));
+
+        $console = $this->createApplication()->make(Kernel::class);
+
+        $commands = [
+            'migrate:refresh --seed',
+            'passport:install',
+        ];
+
+        foreach ($commands as $command) {
+            $console->call($command);
+        }
     }
 }

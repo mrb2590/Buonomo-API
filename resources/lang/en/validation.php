@@ -129,8 +129,9 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'username' => [
+            'regex' => 'The username can contain letters, numbers, dashes, underscores, and periods, '
+                .'must start and end with a letter or number, and can only repeat letters and numbers consecutively.',
         ],
     ],
 

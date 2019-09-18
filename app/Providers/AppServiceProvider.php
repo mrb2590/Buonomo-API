@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Passport\Client;
@@ -35,6 +36,10 @@ class AppServiceProvider extends ServiceProvider
         // Turn off auto incrementing for passport clients
         Client::retrieved(function (Client $client) {
             $client->incrementing = false;
+        });
+
+        Carbon::serializeUsing(function (Carbon $timestamp) {
+            return $timestamp->toIso8601String();
         });
     }
 }
