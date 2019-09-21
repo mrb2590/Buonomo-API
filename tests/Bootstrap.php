@@ -30,6 +30,7 @@ class Bootstrap implements BeforeFirstTestHook, AfterLastTestHook
             'event:cache',
             'migrate:refresh --seed',
             'passport:install',
+            'cache:forget permission.cache',
         ];
 
         foreach ($commands as $command) {
@@ -46,6 +47,7 @@ class Bootstrap implements BeforeFirstTestHook, AfterLastTestHook
         $commands = [
             'migrate:refresh --seed',
             'passport:install',
+            'cache:forget permission.cache',
         ];
 
         foreach ($commands as $command) {

@@ -29,19 +29,19 @@ class RouteServiceProvider extends ServiceProvider
         parent::boot();
 
         Route::bind('user', function ($value) {
-            if (strlen($value) == 36) {
+            if (strlen($value) === 36) {
                 return User::findOrFail($value);
             }
 
             return User::where('username', $value)->firstOrFail();
         });
 
-        Route::bind('trashed-user', function ($value) {
-            if (strlen($value) == 36) {
-                return User::trashed()->findOrFail($value);
+        Route::bind('trashedUser', function ($value) {
+            if (strlen($value) === 36) {
+                return User::onlyTrashed()->findOrFail($value);
             }
 
-            return User::trashed()->where('username', $value)->firstOrFail();
+            return User::onlyTrashed()->where('username', $value)->firstOrFail();
         });
     }
 

@@ -18,17 +18,19 @@ class UserController extends Controller
      */
     public function __construct()
     {
-        $this->middleware(['auth:api', 'verified']);
+        $this->middleware(['auth:api', 'verified', 'permission:access-admin-dashboard']);
     }
 
     /**
-     * Show the landing page.
+     * Fetch users.
      *
      * @param  \App\Models\User  $user
      * @return \App\Http\Resources\User
      */
     public function fetch(Request $request, User $user = null)
     {
+        $this->authorize('read', $user ?? User::class);
+
         if ($user) {
             return new UserResource($user);
         }
@@ -37,13 +39,19 @@ class UserController extends Controller
     }
 
     /**
-     * Update the current user.
+     * Update a user.
      *
      * @param  \App\Models\User  $user
      * @return \App\Http\Resources\User
      */
     public function store(Request $request, User $user = null)
     {
+        if ($request->getMethod() == 'POST') {
+            $this->authorize('create', User::class);
+        } else {
+            $this->authorize('update', $user);
+        }
+
         $fieldRequired = Rule::requiredIf($request->getMethod() == 'POST');
 
         $request->validate([
@@ -95,14 +103,16 @@ class UserController extends Controller
     }
 
     /**
-     * Trash the current user.
+     * Delete a user.
      *
      * @param  \App\Models\User  $user
      * @return \App\Http\Resources\User
      */
     public function destroy(Request $request, User $user)
     {
-        $user->delete();
+        $this->authorize('delete', $user);
+
+        $user->forceDelete();
 
         return response(null, 204);
     }

@@ -31,6 +31,9 @@ class UserTest extends TestCase
                     'created_at',
                     'updated_at',
                 ],
+            ])
+            ->assertJsonFragment([
+                'email' => $user->email,
             ]);
 
         $user->forceDelete();
@@ -47,9 +50,9 @@ class UserTest extends TestCase
 
         $response = $this->actingAs($user, 'api')
             ->json('PATCH', '/v1/user', [
-                'first_name' => 'First',
-                'last_name' => 'Last',
-                'username' => 'test-username',
+                'first_name' => 'first',
+                'last_name' => 'last',
+                'username' => 'username',
             ]);
 
         $response->assertStatus(200)
@@ -65,9 +68,9 @@ class UserTest extends TestCase
                 ],
             ])
             ->assertJsonFragment([
-                'first_name' => 'First',
-                'last_name' => 'Last',
-                'username' => 'test-username',
+                'first_name' => 'first',
+                'last_name' => 'last',
+                'username' => 'username',
             ]);
 
         $user->forceDelete();
@@ -75,17 +78,19 @@ class UserTest extends TestCase
 
 
     /**
-     * Test trashing the current user.
+     * Test deleting the current user.
      *
      * @return void
      */
-    public function testTrashingCurrentUser()
+    public function testDeletingCurrentUser()
     {
         $user = factory(User::class)->create();
 
         $response = $this->actingAs($user, 'api')->delete('/v1/user');
 
         $response->assertStatus(204);
+
+        $this->assertNull(User::find($user->id));
 
         $user->forceDelete();
     }

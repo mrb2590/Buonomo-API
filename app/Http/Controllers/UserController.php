@@ -25,6 +25,8 @@ class UserController extends Controller
      */
     public function fetch(Request $request)
     {
+        $this->authorize('read', $request->user());
+
         return new UserResource($request->user());
     }
 
@@ -35,6 +37,8 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('update', $request->user());
+
         $request->validate([
             'first_name' => ['nullable', 'string', 'max:50'],
             'last_name' => ['nullable', 'string', 'max:100'],
@@ -67,13 +71,15 @@ class UserController extends Controller
     }
 
     /**
-     * Trash the current user.
+     * Delete the current user.
      *
      * @return \App\Http\Resources\User
      */
     public function destroy(Request $request)
     {
-        $request->user()->delete();
+        $this->authorize('delete', $request->user());
+
+        $request->user()->forceDelete();
 
         return response(null, 204);
     }
