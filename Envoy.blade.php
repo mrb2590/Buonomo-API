@@ -27,5 +27,7 @@
 
     php artisan route:cache
 
+    php artisan queue:restart
+
     php artisan up
 @endtask
