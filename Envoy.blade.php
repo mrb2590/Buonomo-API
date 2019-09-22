@@ -27,7 +27,7 @@
 
     php artisan route:cache
 
-    php artisan queue:restart
+    php artisan horizon:terminate
 
     php artisan up
 @endtask
