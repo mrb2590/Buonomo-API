@@ -34,9 +34,7 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
     protected function gate()
     {
         Gate::define('viewHorizon', function ($user) {
-            return in_array($user->email, [
-                config('logging.email'),
-            ]);
+            return $user->can('access-admin-dashboard');
         });
     }
 }

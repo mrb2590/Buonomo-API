@@ -78,13 +78,57 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new \App\Notifications\ResetPassword($token));
+    }
+
+    /**
      * Send the email verification notification.
      *
      * @return void
      */
     public function sendEmailVerificationNotification()
     {
-        $this->notify(new \App\Notifications\VerifyEmailQueued);
+        $this->notify(new \App\Notifications\VerifyEmail);
+    }
+
+    /**
+     * Send the admin user registered notification.
+     *
+     * @param  \App\Models\User  $user
+     * @return void
+     */
+    public function sendAdminPasswordResetNotification(User $user)
+    {
+        $this->notify(new \App\Notifications\Admin\PasswordReset($user));
+    }
+
+    /**
+     * Send the admin user registered notification.
+     *
+     * @param  \App\Models\User  $user
+     * @return void
+     */
+    public function sendAdminRegisteredUserNotification(User $user)
+    {
+        $this->notify(new \App\Notifications\Admin\UserRegistered($user));
+    }
+
+    /**
+     * Send the admin user registered notification.
+     *
+     * @param  \App\Models\User  $user
+     * @return void
+     */
+    public function sendAdminVerifiedUserNotification(User $user)
+    {
+        $this->notify(new \App\Notifications\Admin\UserVerified($user));
     }
 
     /**
