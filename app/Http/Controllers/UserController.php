@@ -21,9 +21,10 @@ class UserController extends Controller
     /**
      * Fetch the current user.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \App\Http\Resources\User
      */
-    public function fetch(Request $request)
+    public function show(Request $request)
     {
         $this->authorize('read', $request->user());
 
@@ -33,9 +34,10 @@ class UserController extends Controller
     /**
      * Update the current user.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \App\Http\Resources\User
      */
-    public function store(Request $request)
+    public function update(Request $request)
     {
         $this->authorize('update', $request->user());
 
@@ -73,6 +75,7 @@ class UserController extends Controller
     /**
      * Delete the current user.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \App\Http\Resources\User
      */
     public function destroy(Request $request)

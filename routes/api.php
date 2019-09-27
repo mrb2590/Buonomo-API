@@ -14,32 +14,57 @@ use Illuminate\Http\Request;
 */
 
 // Fetch the current user
-Route::get('/user', 'UserController@fetch');
-// Update the current user
-Route::patch('/user', 'UserController@store');
-// Delete the current user
+Route::get('/user', 'UserController@show');
+Route::patch('/user', 'UserController@update');
 Route::delete('/user', 'UserController@destroy');
+
+// Fetch roles
+Route::get('/roles', 'RoleController@index');
+Route::get('/roles/{role}', 'RoleController@show');
+
+// Fetch permissions
+Route::get('/permissions', 'PermissionController@index');
+Route::get('/permissions/{permission}', 'PermissionController@show');
 
 // Admin routes
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
-    // Fetch users
-    Route::get('/users/{user?}', 'UserController@fetch');
-    // Create a new user
+    // Users
+    Route::get('/users', 'UserController@index');
+    Route::get('/users/{user}', 'UserController@show');
     Route::post('/users', 'UserController@store');
-    // Update a user
-    Route::patch('/users/{user}', 'UserController@store');
-    // Delete a user
+    Route::patch('/users/{user}', 'UserController@update');
     Route::delete('/users/{user}', 'UserController@destroy');
+
+    // Roles
+    Route::get('/roles', 'RoleController@index');
+    Route::get('/roles/{role}', 'RoleController@show');
+    Route::post('/roles', 'RoleController@store');
+    Route::patch('/roles/{role}', 'RoleController@update');
+    Route::delete('/roles/{role}', 'RoleController@destroy');
+
+    // Permissions
+    Route::get('/permissions', 'PermissionController@index');
+    Route::get('/permissions/{permission}', 'PermissionController@show');
+
+    // Role permissions
+    Route::post('/roles/{role}/permissions/{permission}', 'PermissionRoleController@store');
+    Route::delete('/roles/{role}/permissions/{permission}', 'PermissionRoleController@destroy');
+
+    // User roles
+    Route::post('/users/{user}/roles/{role}', 'RoleUserController@store');
+    Route::delete('/users/{user}/roles/{role}', 'RoleUserController@destroy');
+
+    // User permissions
+    Route::post('/users/{user}/permissions/{permission}', 'PermissionUserController@store');
+    Route::delete('/users/{user}/permissions/{permission}', 'PermissionUserController@destroy');
 
     // Trash routes
     Route::group(['prefix' => 'trash'], function () {
-        // Get trashed users
-        Route::get('/users/{trashedUser?}', 'UserTrashController@fetch');
-        // Trash a user
+        // Trashed users
+        Route::get('/users', 'UserTrashController@index');
+        Route::get('/users/{trashedUser}', 'UserTrashController@show');
         Route::put('/users/{user}', 'UserTrashController@store');
-        // Restore a user
         Route::post('/users/{trashedUser}/restore', 'UserTrashController@restore');
-        // Delete a trashed user
         Route::delete('/users/{trashedUser}', 'UserTrashController@destroy');
     });
 });

@@ -3,18 +3,16 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class UserTest extends TestCase
 {
     /**
-     * Test fetching the current user.
+     * Test showing the current user.
      *
      * @return void
      */
-    public function testFetchingCurrentUser()
+    public function testShowCurrentUser()
     {
         $user = factory(User::class)->create();
 
@@ -44,7 +42,7 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function testUpdatingCurrentUser()
+    public function testUpdateCurrentUser()
     {
         $user = factory(User::class)->create();
 
@@ -76,13 +74,12 @@ class UserTest extends TestCase
         $user->forceDelete();
     }
 
-
     /**
      * Test deleting the current user.
      *
      * @return void
      */
-    public function testDeletingCurrentUser()
+    public function testDestroyCurrentUser()
     {
         $user = factory(User::class)->create();
 

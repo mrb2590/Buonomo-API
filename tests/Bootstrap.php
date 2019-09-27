@@ -28,9 +28,9 @@ class Bootstrap implements BeforeFirstTestHook, AfterLastTestHook
         $commands = [
             'config:cache',
             'event:cache',
-            'migrate:refresh --seed',
-            'passport:install',
-            'cache:forget permission.cache',
+            // 'migrate:refresh --seed',
+            // 'passport:install',
+            // 'cache:forget permission.cache',
         ];
 
         foreach ($commands as $command) {
@@ -45,9 +45,9 @@ class Bootstrap implements BeforeFirstTestHook, AfterLastTestHook
         $console = $this->createApplication()->make(Kernel::class);
 
         $commands = [
-            'migrate:refresh --seed',
-            'passport:install',
-            'cache:forget permission.cache',
+            // 'migrate:refresh --seed',
+            // 'passport:install',
+            // 'cache:forget permission.cache',
         ];
 
         foreach ($commands as $command) {

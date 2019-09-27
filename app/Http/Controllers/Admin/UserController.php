@@ -7,6 +7,7 @@ use App\Http\Resources\Admin\User as UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
@@ -24,62 +25,69 @@ class UserController extends Controller
     /**
      * Fetch users.
      *
-     * @param  \App\Models\User  $user
      * @return \App\Http\Resources\User
      */
-    public function fetch(Request $request, User $user = null)
+    public function index()
     {
-        $this->authorize('read', $user ?? User::class);
-
-        if ($user) {
-            return new UserResource($user);
-        }
+        $this->authorize('read', User::class);
 
         return UserResource::collection(User::paginate(10));
     }
 
     /**
-     * Update a user.
+     * Fetch one user.
      *
      * @param  \App\Models\User  $user
      * @return \App\Http\Resources\User
      */
-    public function store(Request $request, User $user = null)
+    public function show(User $user)
     {
-        if ($request->getMethod() == 'POST') {
-            $this->authorize('create', User::class);
+        $this->authorize('read', User::class);
+
+        return new UserResource($user);
+    }
+
+    /**
+     * Create a new user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\User  $user
+     * @return \App\Http\Resources\User
+     */
+    public function store(Request $request)
+    {
+        $this->authorize('create', User::class);
+        $this->validator($request->all(), true)->validate();
+
+        $user = new User;
+        $user->fill($request->all());
+        $user->created_by_id = $request->user()->id;
+        $user->updated_by_id = $request->user()->id;
+        $user->password = Hash::make($request->password);
+
+        if ($request->email_verified) {
+            $user->email_verified_at = now();
         } else {
-            $this->authorize('update', $user);
+            $user->email_verified_at = null;
+            $user->sendEmailVerificationNotification();
         }
 
-        $fieldRequired = Rule::requiredIf($request->getMethod() == 'POST');
+        $user->save();
 
-        $request->validate([
-            'first_name' => [$fieldRequired, 'string', 'max:50'],
-            'last_name' => [$fieldRequired, 'string', 'max:100'],
-            'email' => [
-                $fieldRequired,
-                'string',
-                'email',
-                'max:255',
-                'unique:users'.($user ? ',email,'.$user->email : '')
-            ],
-            'username' => [
-                $fieldRequired,
-                'string',
-                'min:3',
-                'max:30',
-                'regex:/^[a-zA-Z0-9]+([-_.]?[a-zA-Z0-9])+$/',
-                'unique:users'.($user ? ',id,'.$user->id : ''),
-            ],
-            'password' => [$fieldRequired, 'string', 'min:8', 'confirmed'],
-            'email_verified' => ['required_with:email', 'boolean'],
-        ]);
+        return new UserResource($user);
+    }
 
-        if (!$user) {
-            $user = new User;
-            $user->created_by_id = $request->user()->id;
-        }
+    /**
+     * Update a user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\User  $user
+     * @return \App\Http\Resources\User
+     */
+    public function update(Request $request, User $user)
+    {
+        $this->authorize($user ? 'update' : 'create', User::class);
+        $this->validator($request->all(), false, $user)->validate();
 
         $user->fill($request->all());
         $user->updated_by_id = $request->user()->id;
@@ -88,7 +96,7 @@ class UserController extends Controller
             $user->password = Hash::make($request->password);
         }
 
-        if ($request->has('email')) {
+        if ($request->has('email_verified')) {
             if ($request->email_verified) {
                 $user->email_verified_at = now();
             } else {
@@ -108,12 +116,47 @@ class UserController extends Controller
      * @param  \App\Models\User  $user
      * @return \App\Http\Resources\User
      */
-    public function destroy(Request $request, User $user)
+    public function destroy(User $user)
     {
-        $this->authorize('delete', $user);
+        $this->authorize('delete', User::class);
 
         $user->forceDelete();
 
         return response(null, 204);
+    }
+
+    /**
+     * Validate the request.
+     * 
+     * @param  array  $data
+     * @param  boolean  $required
+     * @param  \App\Models\User  $user
+     * @return void
+     */
+    private function validator(array $data, bool $required, User $user = null)
+    {
+        $required = $required ? 'required' : 'nullable';
+
+        return Validator::make($data, [
+            'first_name' => [$required, 'string', 'max:50'],
+            'last_name' => [$required, 'string', 'max:100'],
+            'email' => [
+                $required,
+                'string',
+                'email',
+                'max:255',
+                Rule::unique('users')->ignore($user),
+            ],
+            'username' => [
+                $required,
+                'string',
+                'min:3',
+                'max:30',
+                'regex:/^[a-zA-Z0-9]+([-_.]?[a-zA-Z0-9])+$/',
+                Rule::unique('users')->ignore($user),
+            ],
+            'password' => [$required, 'string', 'min:8', 'confirmed'],
+            'email_verified' => ['required_with:email', 'boolean'],
+        ]);
     }
 }

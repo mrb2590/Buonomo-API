@@ -1,8 +1,8 @@
 <?php
 
+use App\Models\Permission;
+use App\Models\Role;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 
 class PermissionsTableSeeder extends Seeder
@@ -49,11 +49,69 @@ class PermissionsTableSeeder extends Seeder
             'description' => 'Able to delete any user.',
         ]);
 
-        // Create admin permissions
+        // Create role permissions
         Permission::create([
-            'name' => 'access-admin-dashboard',
-            'display_name' => 'Access admin dashboard',
-            'description' => 'Able to access the admin dashboard.',
+            'name' => 'create-roles',
+            'display_name' => 'Create roles',
+            'description' => 'Able to create new roles.',
+        ]);
+        Permission::create([
+            'name' => 'read-roles',
+            'display_name' => 'Read roles',
+            'description' => 'Able to read roles.',
+        ]);
+        Permission::create([
+            'name' => 'update-roles',
+            'display_name' => 'Update roles',
+            'description' => 'Able to update roles.',
+        ]);
+        Permission::create([
+            'name' => 'delete-roles',
+            'display_name' => 'Delete roles',
+            'description' => 'Able to delete roles.',
+        ]);
+
+        // Create permission permissions
+        Permission::create([
+            'name' => 'read-permissions',
+            'display_name' => 'Read permissions',
+            'description' => 'Able to read permissions.',
+        ]);
+
+        // Create user role permissions
+        Permission::create([
+            'name' => 'assign-user-roles',
+            'display_name' => 'Assign user roles',
+            'description' => 'Able to assign roles to users.',
+        ]);
+        Permission::create([
+            'name' => 'remove-user-roles',
+            'display_name' => 'Remove user roles',
+            'description' => 'Able to remove roles from users.',
+        ]);
+
+        // Create user permission permissions
+        Permission::create([
+            'name' => 'give-user-permissions',
+            'display_name' => 'Give user permissions',
+            'description' => 'Able to give permissions to users.',
+        ]);
+        Permission::create([
+            'name' => 'revoke-user-permissions',
+            'display_name' => 'Revoke user permissions',
+            'description' => 'Able to revoke permissions from users.',
+        ]);
+
+        // Create role permission permissions
+        Permission::create([
+            'name' => 'give-role-permissions',
+            'display_name' => 'Give role permissions',
+            'description' => 'Able to give permissions to roles.',
+        ]);
+        Permission::create([
+            'name' => 'revoke-role-permissions',
+            'display_name' => 'Revoke role permissions',
+            'description' => 'Able to revoke permissions from roles.',
         ]);
 
         // Create notification permissions
@@ -63,7 +121,14 @@ class PermissionsTableSeeder extends Seeder
             'description' => 'Able to recieve admin notifications regarding users.',
         ]);
 
-        // Create roles and assign existing permissions
+        // Create admin dashboard permissions
+        Permission::create([
+            'name' => 'access-admin-dashboard',
+            'display_name' => 'Access admin dashboard',
+            'description' => 'Able to access the admin dashboard.',
+        ]);
+
+        // Create roles and give permissions
         $admin = Role::create([
             'name' => 'admin',
             'display_name' => 'Admin',
@@ -74,7 +139,7 @@ class PermissionsTableSeeder extends Seeder
         $userManager = Role::create([
             'name' => 'user-manager',
             'display_name' => 'User Manager',
-            'description' => 'Able to create, read, update, trash, and delete users.',
+            'description' => 'Able to read and modify users.',
         ]);
         $userManager->givePermissionTo('create-users');
         $userManager->givePermissionTo('read-users');
@@ -82,6 +147,23 @@ class PermissionsTableSeeder extends Seeder
         $userManager->givePermissionTo('trash-users');
         $userManager->givePermissionTo('restore-users');
         $userManager->givePermissionTo('delete-users');
+        $userManager->givePermissionTo('assign-user-roles');
+        $userManager->givePermissionTo('remove-user-roles');
+        $userManager->givePermissionTo('give-user-permissions');
+        $userManager->givePermissionTo('revoke-user-permissions');
         $userManager->givePermissionTo('recieve-admin-user-notifications');
+
+        $userManager = Role::create([
+            'name' => 'role-manager',
+            'display_name' => 'Role Manager',
+            'description' => 'Able to read and modify roles.',
+        ]);
+        $userManager->givePermissionTo('create-roles');
+        $userManager->givePermissionTo('read-roles');
+        $userManager->givePermissionTo('update-roles');
+        $userManager->givePermissionTo('delete-roles');
+        $userManager->givePermissionTo('read-permissions');
+        $userManager->givePermissionTo('give-role-permissions');
+        $userManager->givePermissionTo('revoke-role-permissions');
     }
 }

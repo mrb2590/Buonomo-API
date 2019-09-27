@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\User as UserResource;
 use App\Models\User;
-use Illuminate\Http\Request;
 
 class UserTrashController extends Controller
 {
@@ -22,18 +21,26 @@ class UserTrashController extends Controller
     /**
      * Fetch trashed users.
      *
+     * @return \App\Http\Resources\User
+     */
+    public function index()
+    {
+        $this->authorize('read', User::class);
+
+        return UserResource::collection(User::onlyTrashed()->paginate(10));
+    }
+
+    /**
+     * Fetch one trashed user.
+     *
      * @param  \App\Models\User  $trashedUser
      * @return \App\Http\Resources\User
      */
-    public function fetch(Request $request, User $trashedUser = null)
+    public function show(User $trashedUser)
     {
-        $this->authorize('read', $trashedUser ?? User::class);
+        $this->authorize('read', User::class);
 
-        if ($trashedUser) {
-            return new UserResource($trashedUser);
-        }
-
-        return UserResource::collection(User::onlyTrashed()->paginate(10));
+        return new UserResource($trashedUser);
     }
 
     /**
@@ -42,9 +49,9 @@ class UserTrashController extends Controller
      * @param  \App\Models\User  $user
      * @return \App\Http\Resources\User
      */
-    public function store(Request $request, User $user = null)
+    public function store(User $user)
     {
-        $this->authorize('trash', $user);
+        $this->authorize('trash', User::class);
 
         $user->delete();
 
@@ -57,9 +64,9 @@ class UserTrashController extends Controller
      * @param  \App\Models\User  $trashedUser
      * @return \App\Http\Resources\User
      */
-    public function restore(Request $request, User $trashedUser = null)
+    public function restore(User $trashedUser)
     {
-        $this->authorize('restore', $trashedUser);
+        $this->authorize('restore', User::class);
 
         $trashedUser->restore();
 
@@ -67,14 +74,14 @@ class UserTrashController extends Controller
     }
 
     /**
-     * Delete the a trashed user.
+     * Delete a trashed user.
      *
      * @param  \App\Models\User  $trashedUser
      * @return \App\Http\Resources\User
      */
-    public function destroy(Request $request, User $trashedUser)
+    public function destroy(User $trashedUser)
     {
-        $this->authorize('delete', $trashedUser);
+        $this->authorize('delete', User::class);
 
         $trashedUser->forceDelete();
 

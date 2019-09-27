@@ -2,9 +2,9 @@
 
 namespace App\Listeners;
 
+use App\Models\Permission;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Spatie\Permission\Models\Permission;
 
 class SendAdminVerifiedUserNotification implements ShouldQueue
 {

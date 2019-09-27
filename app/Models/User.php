@@ -40,15 +40,6 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
-
-    /**
      * The attributes that should be mutated to dates.
      *
      * @var array
@@ -140,7 +131,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function delete()
     {
-        // Revoke all permissions and roles
+        // Revoke all permissions and remove all roles
         $this->syncRoles();
         $this->syncPermissions();
 

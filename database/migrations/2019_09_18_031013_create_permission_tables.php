@@ -21,7 +21,7 @@ class CreatePermissionTables extends Migration
             $table->string('name');
             $table->string('guard_name');
             $table->string('display_name');
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->timestamps();
 
             $table->primary('id');
@@ -32,7 +32,7 @@ class CreatePermissionTables extends Migration
             $table->string('name');
             $table->string('guard_name');
             $table->string('display_name');
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->uuid('created_by_id')->nullable();
             $table->uuid('updated_by_id')->nullable();
             $table->timestamps();

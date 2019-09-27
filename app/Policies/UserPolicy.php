@@ -23,18 +23,17 @@ class UserPolicy
      * Determine whether the user can read all users.
      *
      * @param  \App\Models\User $user
-     * @param  \App\Models\User $anyUser
+     * @param  \App\Models\User $userToRead
      * @return boolean
      */
-    public function read(User $user, User $anyUser = null)
+    public function read(User $user, User $userToRead = null)
     {
         if ($user->can('read-users')) {
             return true;
         }
 
-        // Users can read themselves.
-        if ($anyUser) {
-            return $user->id === $anyUser->id;
+        if ($userToRead) {
+            return $user->id === $userToRead->id;
         }
 
         return false;
@@ -48,76 +47,107 @@ class UserPolicy
      */
     public function create(User $user)
     {
-        if ($user->can('create-users')) {
-            return true;
-        }
-
-        return false;
+        return $user->can('create-users');
     }
 
     /**
      * Determine whether the user can update users.
      *
      * @param  \App\Models\User $user
-     * @param  \App\Models\User $anyUser
+     * @param  \App\Models\User $userToUpdate
      * @return boolean
      */
-    public function update(User $user, User $anyUser)
+    public function update(User $user, User $userToUpdate = null)
     {
         if ($user->can('update-users')) {
             return true;
         }
 
-        // Users can update themselves.
-        return $user->id === $anyUser->id;
+        if ($userToUpdate) {
+            return $user->id === $userToUpdate->id;
+        }
     }
 
     /**
      * Determine whether the user can trash users.
      *
      * @param  \App\Models\User $user
-     * @param  \App\Models\User $anyUser
      * @return boolean
      */
-    public function trash(User $user, User $anyUser)
+    public function trash(User $user)
     {
-        if ($user->can('trash-users')) {
-            return true;
-        }
-        
-        return false;
+        return $user->can('trash-users');
     }
 
     /**
      * Determine whether the user can restore users.
      *
      * @param  \App\Models\User $user
-     * @param  \App\Models\User $anyUser
      * @return boolean
      */
-    public function restore(User $user, User $anyUser)
+    public function restore(User $user)
     {
-        if ($user->can('restore-users')) {
-            return true;
-        }
-        
-        return false;
+        return $user->can('restore-users');
     }
 
     /**
      * Determine whether the user can delete users.
      *
      * @param  \App\Models\User $user
-     * @param  \App\Models\User $anyUser
      * @return boolean
      */
-    public function delete(User $user, User $anyUser)
+    public function delete(User $user, User $userToDelete = null)
     {
         if ($user->can('delete-users')) {
             return true;
         }
 
-        // Users can delete themselves.
-        return $user->id === $anyUser->id;
+        if ($userToDelete) {
+            return $user->id === $userToDelete->id;
+        }
+    }
+
+    /**
+     * Determine whether the user can assign user roles.
+     *
+     * @param  \App\Models\User $user
+     * @return boolean
+     */
+    public function assignRole(User $user)
+    {
+        return $user->can('assign-user-roles');
+    }
+
+    /**
+     * Determine whether the user can remove user roles.
+     *
+     * @param  \App\Models\User $user
+     * @return boolean
+     */
+    public function removeRole(User $user)
+    {
+        return $user->can('remove-user-roles');
+    }
+
+    /**
+     * Determine whether the user can give user permissions.
+     *
+     * @param  \App\Models\User $user
+     * @return boolean
+     */
+    public function givePermission(User $user)
+    {
+        return $user->can('give-user-permissions');
+    }
+
+    /**
+     * Determine whether the user can revoke user permissions.
+     *
+     * @param  \App\Models\User $user
+     * @return boolean
+     */
+    public function revokePermission(User $user)
+    {
+        return $user->can('revoke-user-permissions');
     }
 }
