@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\User as UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -44,13 +45,19 @@ class UserController extends Controller
         $request->validate([
             'first_name' => ['nullable', 'string', 'max:50'],
             'last_name' => ['nullable', 'string', 'max:100'],
-            'email' => ['nullable', 'string', 'email', 'max:255', 'unique:users'],
+            'email' => [
+                'nullable',
+                'string',
+                'email',
+                'max:255',
+                Rule::unique('users')->ignore($request->user()),
+            ],
             'username' => [
                 'nullable',
                 'string',
                 'max:30',
                 'regex:/^[a-zA-Z0-9]+([-_.]?[a-zA-Z0-9])+$/',
-                'unique:users,id,'.$request->user()->id,
+                Rule::unique('users')->ignore($request->user()),
             ],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
         ]);
