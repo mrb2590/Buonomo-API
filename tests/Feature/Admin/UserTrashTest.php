@@ -3,25 +3,51 @@
 namespace Tests\Feature\Admin;
 
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class UserTrashTest extends TestCase
 {
+    use RefreshDatabase;
+
+    /**
+     * The admin user.
+     * 
+     * @var \App\Models\User
+     */
+    protected $admin;
+
+    /**
+     * Setup the test environment.
+     *
+     * @return void
+     */
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->admin = factory(User::class)->create();
+        $this->admin->givePermissionTo([
+            'access-admin-dashboard',
+            'read-users',
+            'trash-users',
+            'restore-users',
+            'delete-users',
+        ]);
+    }
 
     /**
      * Test showing multiple trashed users.
      *
      * @return void
      */
-    public function testIndexTrashedUsers()
+    public function test_admin_can_fetch_trashed_users()
     {
         $user = factory(User::class)->create();
-        $user->givePermissionTo(['access-admin-dashboard', 'read-users']);
-        $trashedUser = factory(User::class)->create();
-        $trashedUser->delete();
+        $user->delete();
         $totalUsers = User::onlyTrashed()->count();
 
-        $response = $this->actingAs($user, 'api')->get('/v1/admin/trash/users');
+        $response = $this->actingAs($this->admin, 'api')->get('/v1/admin/trash/users');
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -51,9 +77,6 @@ class UserTrashTest extends TestCase
                 ],
             ])
             ->assertJsonCount($totalUsers > 10 ? 10 : $totalUsers, 'data');
-
-        $trashedUser->forceDelete();
-        $user->forceDelete();
     }
 
     /**
@@ -61,14 +84,12 @@ class UserTrashTest extends TestCase
      *
      * @return void
      */
-    public function testShowTrashedUser()
+    public function test_admin_can_fetch_single_trashed_user()
     {
         $user = factory(User::class)->create();
-        $user->givePermissionTo(['access-admin-dashboard', 'read-users']);
-        $trashedUser = factory(User::class)->create();
-        $trashedUser->delete();
+        $user->delete();
 
-        $response = $this->actingAs($user, 'api')->get('/v1/admin/trash/users/'.$trashedUser->id);
+        $response = $this->actingAs($this->admin, 'api')->get('/v1/admin/trash/users/'.$user->id);
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -87,11 +108,8 @@ class UserTrashTest extends TestCase
                 ],
             ])
             ->assertJsonFragment([
-                'email' => $trashedUser->email,
+                'email' => $user->email,
             ]);
-
-        $trashedUser->forceDelete();
-        $user->forceDelete();
     }
 
     /**
@@ -99,20 +117,15 @@ class UserTrashTest extends TestCase
      *
      * @return void
      */
-    public function testStoreTrashedUser()
+    public function test_admin_can_trash_user()
     {
         $user = factory(User::class)->create();
-        $user->givePermissionTo(['access-admin-dashboard', 'trash-users']);
-        $userToTrash = factory(User::class)->create();
 
-        $response = $this->actingAs($user, 'api')->put('/v1/admin/trash/users/'.$userToTrash->id);
+        $response = $this->actingAs($this->admin, 'api')->put('/v1/admin/trash/users/'.$user->id);
 
         $response->assertStatus(200);
 
-        $this->assertNotNull(User::onlyTrashed()->find($userToTrash->id));
-
-        $user->forceDelete();
-        $userToTrash->forceDelete();
+        $this->assertNotNull(User::onlyTrashed()->find($user->id));
     }
 
     /**
@@ -120,14 +133,12 @@ class UserTrashTest extends TestCase
      *
      * @return void
      */
-    public function testRestoreTrashedUser()
+    public function test_admin_can_restore_user()
     {
         $user = factory(User::class)->create();
-        $user->givePermissionTo(['access-admin-dashboard', 'restore-users']);
-        $userToRestore = factory(User::class)->create();
-        $userToRestore->delete();
+        $user->delete();
 
-        $response = $this->actingAs($user, 'api')->post('/v1/admin/trash/users/'.$userToRestore->id.'/restore');
+        $response = $this->actingAs($this->admin, 'api')->post('/v1/admin/trash/users/'.$user->id.'/restore');
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -146,13 +157,10 @@ class UserTrashTest extends TestCase
                 ],
             ])
             ->assertJsonFragment([
-                'email' => $userToRestore->email,
+                'email' => $user->email,
             ]);
 
-        $this->assertNotNull(User::withoutTrashed()->find($userToRestore->id));
-
-        $user->forceDelete();
-        $userToRestore->forceDelete();
+        $this->assertNotNull(User::withoutTrashed()->find($user->id));
     }
 
     /**
@@ -160,20 +168,15 @@ class UserTrashTest extends TestCase
      *
      * @return void
      */
-    public function testDestroyTrashedUser()
+    public function test_admin_can_delete_trashed_user()
     {
         $user = factory(User::class)->create();
-        $user->givePermissionTo(['access-admin-dashboard', 'delete-users']);
-        $userToDelete = factory(User::class)->create();
-        $userToDelete->delete();
+        $user->delete();
 
-        $response = $this->actingAs($user, 'api')->delete('/v1/admin/trash/users/'.$userToDelete->id);
+        $response = $this->actingAs($this->admin, 'api')->delete('/v1/admin/trash/users/'.$user->id);
 
         $response->assertStatus(204);
 
-        $this->assertNull(User::withTrashed()->find($userToDelete->id));
-
-        $user->forceDelete();
-        $userToDelete->forceDelete();
+        $this->assertNull(User::withTrashed()->find($user->id));
     }
 }

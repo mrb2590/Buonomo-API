@@ -3,20 +3,40 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class UserTest extends TestCase
 {
+    use RefreshDatabase;
+
+    /**
+     * The member user.
+     * 
+     * @var \App\Models\User
+     */
+    protected $member;
+
+    /**
+     * Setup the test environment.
+     *
+     * @return void
+     */
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->member = factory(User::class)->create();
+    }
+
     /**
      * Test showing the current user.
      *
      * @return void
      */
-    public function testShowCurrentUser()
+    public function test_member_can_fetch_theirself()
     {
-        $user = factory(User::class)->create();
-
-        $response = $this->actingAs($user, 'api')->get('/v1/user');
+        $response = $this->actingAs($this->member, 'api')->get('/v1/user');
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -31,10 +51,8 @@ class UserTest extends TestCase
                 ],
             ])
             ->assertJsonFragment([
-                'email' => $user->email,
+                'email' => $this->member->email,
             ]);
-
-        $user->forceDelete();
     }
 
     /**
@@ -42,11 +60,9 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function testUpdateCurrentUser()
+    public function test_member_can_update_theirself()
     {
-        $user = factory(User::class)->create();
-
-        $response = $this->actingAs($user, 'api')
+        $response = $this->actingAs($this->member, 'api')
             ->json('PATCH', '/v1/user', [
                 'first_name' => 'first',
                 'last_name' => 'last',
@@ -70,8 +86,6 @@ class UserTest extends TestCase
                 'last_name' => 'last',
                 'username' => 'username',
             ]);
-
-        $user->forceDelete();
     }
 
     /**
@@ -79,16 +93,12 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function testDestroyCurrentUser()
+    public function test_member_can_delete_theirself()
     {
-        $user = factory(User::class)->create();
-
-        $response = $this->actingAs($user, 'api')->delete('/v1/user');
+        $response = $this->actingAs($this->member, 'api')->delete('/v1/user');
 
         $response->assertStatus(204);
 
-        $this->assertNull(User::find($user->id));
-
-        $user->forceDelete();
+        $this->assertNull(User::find($this->member->id));
     }
 }

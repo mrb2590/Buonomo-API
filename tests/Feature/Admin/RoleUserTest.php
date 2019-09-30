@@ -4,31 +4,51 @@ namespace Tests\Feature\Admin;
 
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class RoleUserTest extends TestCase
 {
+    use RefreshDatabase;
+
+    /**
+     * The admin user.
+     * 
+     * @var \App\Models\User
+     */
+    protected $admin;
+
+    /**
+     * Setup the test environment.
+     *
+     * @return void
+     */
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->admin = factory(User::class)->create();
+        $this->admin->givePermissionTo([
+            'access-admin-dashboard',
+            'assign-user-roles',
+            'remove-user-roles',
+        ]);
+    }
+
     /**
      * Test assigning a role to a user.
      *
      * @return void
      */
-    public function testStoreUserRole()
+    public function test_admin_can_assign_user_role()
     {
-        $user = factory(User::class)->create();
-        $user->givePermissionTo(['access-admin-dashboard', 'assign-user-roles']);
-
-        $userToAssignRole = factory(User::class)->create();
         $role = factory(Role::class)->create();
+        $user = factory(User::class)->create();
 
-        $response = $this->actingAs($user, 'api')
-            ->post('/v1/admin/users/'.$userToAssignRole->id.'/roles/'.$role->id);
+        $response = $this->actingAs($this->admin, 'api')
+            ->post('/v1/admin/users/'.$user->id.'/roles/'.$role->id);
 
         $response->assertStatus(204);
-
-        $role->delete();
-        $userToAssignRole->forceDelete();
-        $user->forceDelete();
     }
 
     /**
@@ -38,20 +58,13 @@ class RoleUserTest extends TestCase
      */
     public function testDestroyUserRole()
     {
-        $user = factory(User::class)->create();
-        $user->givePermissionTo(['access-admin-dashboard', 'remove-user-roles']);
-
-        $userToRemoveRole = factory(User::class)->create();
         $role = factory(Role::class)->create();
+        $user = factory(User::class)->create();
         $user->assignRole($role);
 
-        $response = $this->actingAs($user, 'api')
-            ->delete('/v1/admin/users/'.$userToRemoveRole->id.'/roles/'.$role->id);
+        $response = $this->actingAs($this->admin, 'api')
+            ->delete('/v1/admin/users/'.$user->id.'/roles/'.$role->id);
 
         $response->assertStatus(204);
-
-        $role->delete();
-        $userToRemoveRole->forceDelete();
-        $user->forceDelete();
     }
 }

@@ -4,25 +4,51 @@ namespace Tests\Feature\Admin;
 
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class RoleTest extends TestCase
 {
+    use RefreshDatabase;
+
+    /**
+     * The admin user.
+     * 
+     * @var \App\Models\User
+     */
+    protected $admin;
+
+    /**
+     * Setup the test environment.
+     *
+     * @return void
+     */
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->admin = factory(User::class)->create();
+        $this->admin->givePermissionTo([
+            'access-admin-dashboard',
+            'read-roles',
+            'create-roles',
+            'update-roles',
+            'delete-roles',
+        ]);
+    }
+
     /**
      * Test showing multiple roles.
      *
      * @return void
      */
-    public function testIndexRoles()
+    public function test_admin_can_fetch_roles()
     {
-        $user = factory(User::class)->create();
-        $user->givePermissionTo(['access-admin-dashboard', 'read-roles']);
-
         $roles = factory(Role::class, 5)->create();
         $totalRoles = Role::count();
 
-        $response = $this->actingAs($user, 'api')->get('/v1/admin/roles');
+        $response = $this->actingAs($this->admin, 'api')->get('/v1/admin/roles');
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -49,12 +75,6 @@ class RoleTest extends TestCase
                 ],
             ])
             ->assertJsonCount($totalRoles > 10 ? 10 : $totalRoles, 'data');
-
-        $roles->each(function ($role) {
-            $role->delete();
-        });
-
-        $user->forceDelete();
     }
 
     /**
@@ -62,14 +82,11 @@ class RoleTest extends TestCase
      *
      * @return void
      */
-    public function testShowRole()
+    public function test_admin_can_fetch_single_role()
     {
-        $user = factory(User::class)->create();
-        $user->givePermissionTo(['access-admin-dashboard', 'read-roles']);
-
         $role = factory(Role::class)->create();
 
-        $response = $this->actingAs($user, 'api')->get('/v1/admin/roles/'.$role->id);
+        $response = $this->actingAs($this->admin, 'api')->get('/v1/admin/roles/'.$role->id);
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -84,9 +101,6 @@ class RoleTest extends TestCase
                     "updated_at",
                 ],
             ]);
-
-        $role->delete();
-        $user->forceDelete();
     }
 
     /**
@@ -94,14 +108,11 @@ class RoleTest extends TestCase
      *
      * @return void
      */
-    public function testStoreRole()
+    public function test_admin_can_create_role()
     {
-        $user = factory(User::class)->create();
-        $user->givePermissionTo(['access-admin-dashboard', 'create-roles']);
-
         $roleName = 'Test Role '.Str::random(5);
 
-        $response = $this->actingAs($user, 'api')
+        $response = $this->actingAs($this->admin, 'api')
             ->json('POST', '/v1/admin/roles', [
                 'name' => Str::slug($roleName),
                 'display_name' => $roleName,
@@ -126,12 +137,6 @@ class RoleTest extends TestCase
                 'display_name' => $roleName,
                 'description' => 'This is a test role.',
             ]);
-
-        $content = $response->decodeResponseJson();
-        $role = Role::findOrFail($content['data']['id']);
-
-        $role->delete();
-        $user->forceDelete();
     }
 
     /**
@@ -139,15 +144,12 @@ class RoleTest extends TestCase
      *
      * @return void
      */
-    public function testUpdateRole()
+    public function test_admin_can_update_role()
     {
-        $user = factory(User::class)->create();
-        $user->givePermissionTo(['access-admin-dashboard', 'update-roles']);
-
         $role = factory(Role::class)->create();
         $roleName = 'Test Role '.Str::random(5);
 
-        $response = $this->actingAs($user, 'api')
+        $response = $this->actingAs($this->admin, 'api')
             ->json('PATCH', '/v1/admin/roles/'.$role->id, [
                 'name' => Str::slug($roleName),
                 'display_name' => $roleName,
@@ -172,9 +174,6 @@ class RoleTest extends TestCase
                 'display_name' => $roleName,
                 'description' => 'This is a test role.',
             ]);
-
-        $role->delete();
-        $user->forceDelete();
     }
 
     /**
@@ -182,20 +181,14 @@ class RoleTest extends TestCase
      *
      * @return void
      */
-    public function testDestroyRole()
+    public function test_admin_can_delete_role()
     {
-        $user = factory(User::class)->create();
-        $user->givePermissionTo(['access-admin-dashboard', 'delete-roles']);
-
         $role = factory(Role::class)->create();
 
-        $response = $this->actingAs($user, 'api')->delete('/v1/admin/roles/'.$role->id);
+        $response = $this->actingAs($this->admin, 'api')->delete('/v1/admin/roles/'.$role->id);
 
         $response->assertStatus(204);
 
         $this->assertNull(Role::find($role->id));
-
-        $role->delete();
-        $user->forceDelete();
     }
 }

@@ -4,22 +4,43 @@ namespace Tests\Feature;
 
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class RoleTest extends TestCase
 {
+    use RefreshDatabase;
+
+    /**
+     * The member user.
+     * 
+     * @var \App\Models\User
+     */
+    protected $member;
+
+    /**
+     * Setup the test environment.
+     *
+     * @return void
+     */
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->member = factory(User::class)->create();
+    }
+
     /**
      * Test showing multiple roles.
      *
      * @return void
      */
-    public function testIndexRoles()
+    public function test_member_can_fetch_roles()
     {
-        $user = factory(User::class)->create();
         $roles = factory(Role::class, 5)->create();
         $totalRoles = Role::count();
 
-        $response = $this->actingAs($user, 'api')->get('/v1/roles');
+        $response = $this->actingAs($this->member, 'api')->get('/v1/roles');
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -42,11 +63,6 @@ class RoleTest extends TestCase
                 ],
             ])
             ->assertJsonCount($totalRoles > 10 ? 10 : $totalRoles, 'data');
-
-        $roles->each(function ($role) {
-            $role->delete();
-        });
-        $user->delete();
     }
 
     /**
@@ -54,12 +70,11 @@ class RoleTest extends TestCase
      *
      * @return void
      */
-    public function testShowRole()
+    public function test_member_can_fetch_single_role()
     {
         $role = factory(Role::class)->create();
-        $user = factory(User::class)->create();
 
-        $response = $this->actingAs($user, 'api')->get('/v1/roles/'.$role->id);
+        $response = $this->actingAs($this->member, 'api')->get('/v1/roles/'.$role->id);
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -70,8 +85,5 @@ class RoleTest extends TestCase
                     "description",
                 ],
             ]);
-
-        $role->delete();
-        $user->delete();
     }
 }

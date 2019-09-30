@@ -3,24 +3,51 @@
 namespace Tests\Feature\Admin;
 
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class UserTest extends TestCase
 {
+    use RefreshDatabase;
+
+    /**
+     * The admin user.
+     * 
+     * @var \App\Models\User
+     */
+    protected $admin;
+
+    /**
+     * Setup the test environment.
+     *
+     * @return void
+     */
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->admin = factory(User::class)->create();
+        $this->admin->givePermissionTo([
+            'access-admin-dashboard',
+            'read-users',
+            'create-users',
+            'update-users',
+            'delete-users',
+        ]);
+    }
+
     /**
      * Test showing multiple users.
      *
      * @return void
      */
-    public function testIndexUsers()
+    public function test_admin_can_fetch_users()
     {
-        $user = factory(User::class)->create();
-        $user->givePermissionTo(['access-admin-dashboard', 'read-users']);
-
+        factory(User::class, 5)->create();
         $totalUsers = User::count();
 
-        $response = $this->actingAs($user, 'api')->get('/v1/admin/users');
+        $response = $this->actingAs($this->admin, 'api')->get('/v1/admin/users');
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -50,20 +77,17 @@ class UserTest extends TestCase
                 ],
             ])
             ->assertJsonCount($totalUsers > 10 ? 10 : $totalUsers, 'data');
-
-        $user->forceDelete();
     }
     /**
      * Test showing a single user.
      *
      * @return void
      */
-    public function testShowUser()
+    public function test_admin_can_fetch_single_user()
     {
         $user = factory(User::class)->create();
-        $user->givePermissionTo(['access-admin-dashboard', 'read-users']);
 
-        $response = $this->actingAs($user, 'api')->get('/v1/admin/users/'.$user->id);
+        $response = $this->actingAs($this->admin, 'api')->get('/v1/admin/users/'.$user->id);
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -81,8 +105,6 @@ class UserTest extends TestCase
                     'deleted_at',
                 ],
             ]);
-
-        $user->forceDelete();
     }
 
     /**
@@ -90,12 +112,9 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function testStoreUser()
+    public function test_admin_can_create_user()
     {
-        $user = factory(User::class)->create();
-        $user->givePermissionTo(['access-admin-dashboard', 'create-users']);
-
-        $response = $this->actingAs($user, 'api')
+        $response = $this->actingAs($this->admin, 'api')
             ->json('POST', '/v1/admin/users', [
                 'first_name' => 'First',
                 'last_name' => 'Last',
@@ -132,12 +151,6 @@ class UserTest extends TestCase
                 'email_verified_at' => null,
             ]);
 
-        $user->forceDelete();
-
-        if ($user = User::where('email', 'test@example.com')->first()) {
-            $user->forceDelete();
-        }
-
     }
 
     /**
@@ -145,17 +158,15 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function testUpdateUser()
+    public function test_admin_can_update_user()
     {
         $user = factory(User::class)->create();
-        $user->givePermissionTo(['access-admin-dashboard', 'update-users']);
-        $userToUpdate = factory(User::class)->create();
 
         $email = 'test'.Str::random(5).'@example.com';
         $username = Str::random(5);
 
-        $response = $this->actingAs($user, 'api')
-            ->json('PATCH', '/v1/admin/users/'.$userToUpdate->id, [
+        $response = $this->actingAs($this->admin, 'api')
+            ->json('PATCH', '/v1/admin/users/'.$user->id, [
                 'first_name' => 'First1',
                 'last_name' => 'Last1',
                 'email' => $email,
@@ -188,9 +199,6 @@ class UserTest extends TestCase
                 'username' => $username,
                 'email_verified_at' => null,
             ]);
-
-        $user->forceDelete();
-        $userToUpdate->forceDelete();
     }
 
     /**
@@ -198,19 +206,14 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function testDestroyUser()
+    public function test_admin_can_delete_user()
     {
         $user = factory(User::class)->create();
-        $user->givePermissionTo(['access-admin-dashboard', 'delete-users']);
-        $userToDelete = factory(User::class)->create();
 
-        $response = $this->actingAs($user, 'api')->delete('/v1/admin/users/'.$userToDelete->id);
+        $response = $this->actingAs($this->admin, 'api')->delete('/v1/admin/users/'.$user->id);
 
         $response->assertStatus(204);
 
-        $this->assertNull(User::withTrashed()->find($userToDelete->id));
-
-        $user->forceDelete();
-        $userToDelete->forceDelete();
+        $this->assertNull(User::withTrashed()->find($user->id));
     }
 }

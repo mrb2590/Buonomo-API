@@ -4,21 +4,42 @@ namespace Tests\Feature;
 
 use App\Models\Permission;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class PermissionTest extends TestCase
 {
+    use RefreshDatabase;
+
+    /**
+     * The member user.
+     * 
+     * @var \App\Models\User
+     */
+    protected $member;
+
+    /**
+     * Setup the test environment.
+     *
+     * @return void
+     */
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->member = factory(User::class)->create();
+    }
+
     /**
      * Test showing multiple permissions.
      *
      * @return void
      */
-    public function testIndexPermissions()
+    public function test_member_can_fetch_permissions()
     {
         $totalPermissions = Permission::count();
-        $user = factory(User::class)->create();
 
-        $response = $this->actingAs($user, 'api')->get('/v1/permissions');
+        $response = $this->actingAs($this->member, 'api')->get('/v1/permissions');
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -41,8 +62,6 @@ class PermissionTest extends TestCase
                 ],
             ])
             ->assertJsonCount($totalPermissions > 10 ? 10 : $totalPermissions, 'data');
-
-        $user->delete();
     }
 
     /**
@@ -50,12 +69,11 @@ class PermissionTest extends TestCase
      *
      * @return void
      */
-    public function testShowPermission()
+    public function test_member_can_fetch_single_permission()
     {
         $permission = Permission::first();
-        $user = factory(User::class)->create();
 
-        $response = $this->actingAs($user, 'api')->get('/v1/permissions/'.$permission->id);
+        $response = $this->actingAs($this->member, 'api')->get('/v1/permissions/'.$permission->id);
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -66,7 +84,5 @@ class PermissionTest extends TestCase
                     "description",
                 ],
             ]);
-
-        $user->delete();
     }
 }
