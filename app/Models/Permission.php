@@ -11,6 +11,20 @@ class Permission extends SpatiePermission
     use HasUuid;
 
     /**
+     * The searchable columns.
+     * 
+     * @var array
+     */
+    public static $searchableColumns = ['name', 'description'];
+
+    /**
+     * The sortable columns.
+     * 
+     * @var array
+     */
+    public static $sortableColumns = ['name'];
+
+    /**
      * Indicates if the IDs are auto-incrementing.
      *
      * @var bool

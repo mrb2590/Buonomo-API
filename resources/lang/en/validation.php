@@ -133,6 +133,10 @@ return [
             'regex' => 'The username can contain letters, numbers, dashes, underscores, and periods, '
                 .'must start and end with a letter or number, and can only repeat letters and numbers consecutively.',
         ],
+        'sort' => [
+            'regex' => 'The sort field must contain a field name and the order (asc or desc) seperated by a comma. '
+            .' Example: "name,asc" or "name,desc"',
+        ],
     ],
 
     /*

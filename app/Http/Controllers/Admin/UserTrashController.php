@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\RequestProcessor;
 use App\Http\Resources\Admin\User as UserResource;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class UserTrashController extends Controller
 {
@@ -21,26 +23,32 @@ class UserTrashController extends Controller
     /**
      * Fetch trashed users.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \App\Http\Resources\User
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('read', User::class);
 
-        return UserResource::collection(User::onlyTrashed()->paginate(10));
+        $processor = new RequestProcessor($request, User::class);
+
+        return UserResource::collection($processor->index(User::onlyTrashed()));
     }
 
     /**
      * Fetch one trashed user.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\User  $trashedUser
      * @return \App\Http\Resources\User
      */
-    public function show(User $trashedUser)
+    public function show(Request $request, User $trashedUser)
     {
         $this->authorize('read', User::class);
 
-        return new UserResource($trashedUser);
+        $processor = new RequestProcessor($request);
+
+        return new UserResource($processor->show($trashedUser));
     }
 
     /**

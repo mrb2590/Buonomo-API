@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\RequestProcessor;
 use App\Http\Resources\User as UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -29,7 +30,9 @@ class UserController extends Controller
     {
         $this->authorize('read', $request->user());
 
-        return new UserResource($request->user());
+        $processor = new RequestProcessor($request);
+
+        return new UserResource($processor->show($request->user()));
     }
 
     /**

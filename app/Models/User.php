@@ -15,6 +15,29 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasApiTokens, HasRoles, HasUuid, Notifiable, SoftDeletes;
 
     /**
+     * The searchable columns.
+     * 
+     * @var array
+     */
+    public static $searchableColumns = ['first_name', 'last_name', 'email', 'username'];
+
+    /**
+     * The sortable columns.
+     * 
+     * @var array
+     */
+    public static $sortableColumns = [
+        'first_name',
+        'last_name',
+        'email',
+        'username',
+        'email_verified_at',
+        'deleted_at',
+        'created_at',
+        'updated_at',
+    ];
+
+    /**
      * Indicates if the IDs are auto-incrementing.
      *
      * @var bool

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\RequestProcessor;
 use App\Http\Resources\Admin\Permission as PermissionResource;
 use App\Models\Permission;
+use Illuminate\Http\Request;
 
 class PermissionController extends Controller
 {
@@ -21,25 +23,31 @@ class PermissionController extends Controller
     /**
      * Fetch permissions.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \App\Http\Resources\Permission
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('read', Permission::class);
 
-        return PermissionResource::collection(Permission::paginate(10));
+        $processor = new RequestProcessor($request, Permission::class);
+
+        return PermissionResource::collection($processor->index());
     }
 
     /**
      * Fetch one permission.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Permission  $permission
      * @return \App\Http\Resources\Permission
      */
-    public function show(Permission $permission)
+    public function show(Request $request, Permission $permission)
     {
         $this->authorize('read', Permission::class);
 
-        return new PermissionResource($permission);
+        $processor = new RequestProcessor($request);
+
+        return new PermissionResource($processor->show($permission));
     }
 }

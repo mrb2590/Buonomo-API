@@ -10,6 +10,20 @@ class Role extends SpatieRole
     use HasUuid;
 
     /**
+     * The searchable columns.
+     * 
+     * @var array
+     */
+    public static $searchableColumns = ['name', 'description'];
+
+    /**
+     * The sortable columns.
+     * 
+     * @var array
+     */
+    public static $sortableColumns = ['name', 'created_at', 'updated_at'];
+
+    /**
      * Indicates if the IDs are auto-incrementing.
      *
      * @var bool

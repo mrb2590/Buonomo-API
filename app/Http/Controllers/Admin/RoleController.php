@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\RequestProcessor;
 use App\Http\Resources\Admin\Role as RoleResource;
 use App\Models\Role;
 use Illuminate\Http\Request;
@@ -24,26 +25,32 @@ class RoleController extends Controller
     /**
      * Fetch roles.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \App\Http\Resources\Role
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('read', Role::class);
 
-        return RoleResource::collection(Role::paginate(10));
+        $processor = new RequestProcessor($request, Role::class);
+
+        return RoleResource::collection($processor->index());
     }
 
     /**
      * Fetch one role.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Role  $role
      * @return \App\Http\Resources\Role
      */
-    public function show(Role $role)
+    public function show(Request $request, Role $role)
     {
         $this->authorize('read', Role::class);
 
-        return new RoleResource($role);
+        $processor = new RequestProcessor($request);
+
+        return new RoleResource($processor->show($role));
     }
 
     /**

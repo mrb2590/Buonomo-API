@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\RequestProcessor;
 use App\Http\Resources\Admin\User as UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -25,26 +26,32 @@ class UserController extends Controller
     /**
      * Fetch users.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \App\Http\Resources\User
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('read', User::class);
 
-        return UserResource::collection(User::paginate(10));
+        $processor = new RequestProcessor($request, User::class);
+
+        return UserResource::collection($processor->index());
     }
 
     /**
      * Fetch one user.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\User  $user
      * @return \App\Http\Resources\User
      */
-    public function show(User $user)
+    public function show(Request $request, User $user)
     {
         $this->authorize('read', User::class);
 
-        return new UserResource($user);
+        $processor = new RequestProcessor($request);
+
+        return new UserResource($processor->show($user));
     }
 
     /**
