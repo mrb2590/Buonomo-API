@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\HasActivity;
 use App\Traits\HasUuid;
 use Spatie\Permission\Models\Role as SpatieRole;
 
 class Role extends SpatieRole
 {
-    use HasUuid;
+    use HasUuid, HasActivity;
 
     /**
      * The searchable columns.

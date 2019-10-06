@@ -24,7 +24,7 @@ class PermissionController extends Controller
      * Fetch permissions.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \App\Http\Resources\Permission
+     * @return \App\Http\Resources\Admin\Permission
      */
     public function index(Request $request)
     {
@@ -40,7 +40,7 @@ class PermissionController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Permission  $permission
-     * @return \App\Http\Resources\Permission
+     * @return \App\Http\Resources\Admin\Permission
      */
     public function show(Request $request, Permission $permission)
     {

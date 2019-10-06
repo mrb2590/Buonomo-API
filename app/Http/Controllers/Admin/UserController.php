@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\User\Created;
+use App\Events\User\Updated;
+use App\Events\User\Verified;
 use App\Http\Controllers\Controller;
 use App\Http\RequestProcessor;
 use App\Http\Resources\Admin\User as UserResource;
@@ -27,7 +30,7 @@ class UserController extends Controller
      * Fetch users.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \App\Http\Resources\User
+     * @return \App\Http\Resources\Admin\User
      */
     public function index(Request $request)
     {
@@ -43,7 +46,7 @@ class UserController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\User  $user
-     * @return \App\Http\Resources\User
+     * @return \App\Http\Resources\Admin\User
      */
     public function show(Request $request, User $user)
     {
@@ -59,7 +62,7 @@ class UserController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\User  $user
-     * @return \App\Http\Resources\User
+     * @return \App\Http\Resources\Admin\User
      */
     public function store(Request $request)
     {
@@ -81,6 +84,8 @@ class UserController extends Controller
 
         $user->save();
 
+        event(new Created($user, $request->user()));
+
         return new UserResource($user);
     }
 
@@ -89,7 +94,7 @@ class UserController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\User  $user
-     * @return \App\Http\Resources\User
+     * @return \App\Http\Resources\Admin\User
      */
     public function update(Request $request, User $user)
     {
@@ -106,6 +111,8 @@ class UserController extends Controller
         if ($request->has('email_verified')) {
             if ($request->email_verified) {
                 $user->email_verified_at = now();
+
+                event(new Verified($user, $request->user()));
             } else {
                 $user->email_verified_at = null;
                 $user->sendEmailVerificationNotification();
@@ -114,20 +121,25 @@ class UserController extends Controller
 
         $user->save();
 
+        event(new Updated($user, $request->user()));
+
         return new UserResource($user);
     }
 
     /**
      * Delete a user.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\User  $user
-     * @return \App\Http\Resources\User
+     * @return \App\Http\Resources\Admin\User
      */
-    public function destroy(User $user)
+    public function destroy(Request $request, User $user)
     {
         $this->authorize('delete', User::class);
 
         $user->forceDelete();
+
+        event(new Deleted($user, $request->user()));
 
         return response(null, 204);
     }

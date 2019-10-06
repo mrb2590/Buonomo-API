@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Listeners;
+namespace App\Listeners\Admin\User;
 
 use App\Models\Permission;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
-class SendAdminRegisteredUserNotification implements ShouldQueue
+class SendUserVerifiedNotification implements ShouldQueue
 {
     /**
      * Create the event listener.
@@ -19,13 +19,12 @@ class SendAdminRegisteredUserNotification implements ShouldQueue
     }
 
     /**
-     * Handle the event. Get All users who ahve the permission directly
-     * or via roles and send the notificaion.
+     * Handle the event.
      *
      * @param  object  $event
      * @return void
      */
-    public function handle($event)
+    public function handle(Verified $event)
     {
         $permission = Permission::where('name', 'recieve-admin-user-notifications')->first();
         $users = collect($permission->users);
@@ -35,7 +34,7 @@ class SendAdminRegisteredUserNotification implements ShouldQueue
         });
 
         $users->flatten()->unique('id')->each(function ($user) use ($event) {
-            $user->sendAdminRegisteredUserNotification($event->user);
+            $user->sendAdminVerifiedUserNotification($event->user);
         });
     }
 }

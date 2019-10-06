@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -38,31 +39,16 @@ class AppServiceProvider extends ServiceProvider
             $client->incrementing = false;
         });
 
-        // // Auto generate uuid when creating new permissions
-        // Permission::creating(function (Permission $permission) {
-        //     $permission->incrementing = false;
-        //     $permission->id = Str::uuid()->toString();
-        // });
-
-        // // Turn off auto incrementing for permissions
-        // Permission::retrieved(function (Permission $permission) {
-        //     $permission->incrementing = false;
-        // });
-
-        // // Auto generate uuid when creating new roles
-        // Role::creating(function (Role $role) {
-        //     $role->incrementing = false;
-        //     $role->id = Str::uuid()->toString();
-        // });
-
-        // // Turn off auto incrementing for roles
-        // Role::retrieved(function (Role $role) {
-        //     $role->incrementing = false;
-        // });
-
         // Serialize all dates to ISO 8601 format
         Carbon::serializeUsing(function (Carbon $timestamp) {
             return $timestamp->toIso8601String();
         });
+
+        // Map polymorphic relaitonship class names
+        Relation::morphMap([
+            'user' => \App\Models\User::class,
+            'role' => \App\Models\Role::class,
+            'permission' => \App\Models\Permission::class,
+        ]);
     }
 }

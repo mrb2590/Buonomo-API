@@ -28,6 +28,11 @@ Route::get('/permissions/{permission}', 'PermissionController@show');
 
 // Admin routes
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
+    // Activity
+    Route::get('/activity', 'ActivityController@index');
+    Route::get('/activity/{activity}', 'ActivityController@show');
+    Route::delete('/activity/{activity}', 'ActivityController@destroy');
+
     // Users
     Route::get('/users', 'UserController@index');
     Route::get('/users/{user}', 'UserController@show');

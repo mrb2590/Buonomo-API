@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Admin;
 
+use App\Http\Resources\Admin\Activity as ActivityResource;
 use App\Http\Resources\Admin\Permission as PermissionResource;
 use App\Http\Resources\Admin\Role as RoleResource;
 use App\Http\Resources\Admin\User as UserResource;
@@ -33,6 +34,8 @@ class User extends JsonResource
             'updated_by' => new UserResource($this->whenLoaded('updated_by')),
             'permissions' => PermissionResource::collection($this->whenLoaded('permissions')),
             'roles' => RoleResource::collection($this->whenLoaded('roles')),
+            'activity' => ActivityResource::collection($this->whenLoaded('activity')),
+            'caused_activity' => ActivityResource::collection($this->whenLoaded('caused_activity')),
         ];
     }
 }

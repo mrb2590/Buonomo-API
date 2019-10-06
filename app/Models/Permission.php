@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\HasActivity;
 use App\Traits\HasUuid;
 use Exception;
 use Spatie\Permission\Models\Permission as SpatiePermission;
 
 class Permission extends SpatiePermission
 {
-    use HasUuid;
+    use HasUuid, HasActivity;
 
     /**
      * The searchable columns.
@@ -22,7 +23,7 @@ class Permission extends SpatiePermission
      * 
      * @var array
      */
-    public static $sortableColumns = ['name'];
+    public static $sortableColumns = ['name', 'created_at', 'updated_at'];
 
     /**
      * Indicates if the IDs are auto-incrementing.

@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\Role\Created;
+use App\Events\Role\Deleted;
+use App\Events\Role\Updated;
 use App\Http\Controllers\Controller;
 use App\Http\RequestProcessor;
 use App\Http\Resources\Admin\Role as RoleResource;
@@ -26,7 +29,7 @@ class RoleController extends Controller
      * Fetch roles.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \App\Http\Resources\Role
+     * @return \App\Http\Resources\Admin\Role
      */
     public function index(Request $request)
     {
@@ -42,7 +45,7 @@ class RoleController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Role  $role
-     * @return \App\Http\Resources\Role
+     * @return \App\Http\Resources\Admin\Role
      */
     public function show(Request $request, Role $role)
     {
@@ -57,7 +60,7 @@ class RoleController extends Controller
      * Create a new role.
      * 
      * @param  \Illuminate\Http\Request  $request
-     * @return \App\Http\Resources\Role
+     * @return \App\Http\Resources\Admin\Role
      */
     public function store(Request $request)
     {
@@ -71,6 +74,8 @@ class RoleController extends Controller
         $role->updated_by_id = $request->user()->id;
         $role->save();
 
+        event(new Created($role, $request->user()));
+
         return new RoleResource($role);
     }
 
@@ -79,7 +84,7 @@ class RoleController extends Controller
      * 
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Role  $role
-     * @return \App\Http\Resources\Role
+     * @return \App\Http\Resources\Admin\Role
      */
     public function update(Request $request, Role $role)
     {
@@ -89,6 +94,8 @@ class RoleController extends Controller
         $role->fill($request->all());
         $role->updated_by_id = $request->user()->id;
         $role->save();
+
+        event(new Updated($role, $request->user()));
 
         return new RoleResource($role);
     }
@@ -100,11 +107,13 @@ class RoleController extends Controller
      * @param  \App\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Role $role)
+    public function destroy(Request $request, Role $role)
     {
         $this->authorize('delete', Role::class);
 
         $role->delete();
+
+        event(new Deleted($role, $request->user()));
 
         return response(null, 204);
     }

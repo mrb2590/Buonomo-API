@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\User\Deleted;
+use App\Events\User\Restored;
+use App\Events\User\Trashed;
 use App\Http\Controllers\Controller;
 use App\Http\RequestProcessor;
 use App\Http\Resources\Admin\User as UserResource;
@@ -24,7 +27,7 @@ class UserTrashController extends Controller
      * Fetch trashed users.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \App\Http\Resources\User
+     * @return \App\Http\Resources\Admin\User
      */
     public function index(Request $request)
     {
@@ -40,7 +43,7 @@ class UserTrashController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\User  $trashedUser
-     * @return \App\Http\Resources\User
+     * @return \App\Http\Resources\Admin\User
      */
     public function show(Request $request, User $trashedUser)
     {
@@ -54,14 +57,17 @@ class UserTrashController extends Controller
     /**
      * Trash a user.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\User  $user
-     * @return \App\Http\Resources\User
+     * @return \App\Http\Resources\Admin\User
      */
-    public function store(User $user)
+    public function store(Request $request, User $user)
     {
         $this->authorize('trash', User::class);
 
         $user->delete();
+
+        event(new Trashed($user, $request->user()));
 
         return new UserResource($user);
     }
@@ -69,14 +75,17 @@ class UserTrashController extends Controller
     /**
      * Restore a trashed user.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\User  $trashedUser
-     * @return \App\Http\Resources\User
+     * @return \App\Http\Resources\Admin\User
      */
-    public function restore(User $trashedUser)
+    public function restore(Request $request, User $trashedUser)
     {
         $this->authorize('restore', User::class);
 
         $trashedUser->restore();
+
+        event(new Restored($trashedUser, $request->user()));
 
         return new UserResource($trashedUser);
     }
@@ -84,14 +93,17 @@ class UserTrashController extends Controller
     /**
      * Delete a trashed user.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\User  $trashedUser
-     * @return \App\Http\Resources\User
+     * @return \Illuminate\Http\Response
      */
-    public function destroy(User $trashedUser)
+    public function destroy(Request $request, User $trashedUser)
     {
         $this->authorize('delete', User::class);
 
         $trashedUser->forceDelete();
+
+        event(new Deleted($trashedUser, $request->user()));
 
         return response(null, 204);
     }

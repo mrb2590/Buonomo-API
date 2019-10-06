@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\User\Deleted;
+use App\Events\User\Updated;
 use App\Http\RequestProcessor;
 use App\Http\Resources\User as UserResource;
 use Illuminate\Http\Request;
@@ -65,6 +67,10 @@ class UserController extends Controller
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
         ]);
 
+        if ($request->has('email') && $request->email != $request->user()->email) {
+            $request->user()->email_verified_at = null;
+        }
+
         $request->user()->fill($request->all());
         $request->user()->updated_by_id = $request->user()->id;
 
@@ -72,12 +78,13 @@ class UserController extends Controller
             $request->user()->password = Hash::make($request->password);
         }
 
-        if ($request->has('email')) {
-            $request->user()->email_verified_at = null;
+        $request->user()->save();
+
+        if (!$request->user()->email_verified_at) {
             $request->user()->sendEmailVerificationNotification();
         }
 
-        $request->user()->save();
+        event(new Updated($request->user(), $request->user()));
 
         return new UserResource($request->user());
     }
@@ -93,6 +100,8 @@ class UserController extends Controller
         $this->authorize('delete', $request->user());
 
         $request->user()->forceDelete();
+
+        event(new Deleted($request->user(), $request->user()));
 
         return response(null, 204);
     }

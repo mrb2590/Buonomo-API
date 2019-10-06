@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Listeners;
+namespace App\Listeners\Admin\User;
 
 use App\Models\Permission;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
-class SendAdminPasswordResetNotification implements ShouldQueue
+class SendPasswordResetNotification implements ShouldQueue
 {
     /**
      * Create the event listener.
@@ -24,7 +24,7 @@ class SendAdminPasswordResetNotification implements ShouldQueue
      * @param  object  $event
      * @return void
      */
-    public function handle($event)
+    public function handle(PasswordReset $event)
     {
         $permission = Permission::where('name', 'recieve-admin-user-notifications')->first();
         $users = collect($permission->users);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Admin;
 
+use App\Http\Resources\Admin\Activity as ActivityResource;
 use App\Http\Resources\Admin\Permission as PermissionResource;
 use App\Http\Resources\Admin\User as UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -29,6 +30,7 @@ class Role extends JsonResource
             'updated_by' => new UserResource($this->whenLoaded('updated_by')),
             'permissions' => PermissionResource::collection($this->whenLoaded('permissions')),
             'users' => UserResource::collection($this->whenLoaded('users')),
+            'activity' => ActivityResource::collection($this->whenLoaded('activity')),
         ];
     }
 }

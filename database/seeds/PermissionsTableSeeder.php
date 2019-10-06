@@ -128,6 +128,23 @@ class PermissionsTableSeeder extends Seeder
             'description' => 'Able to access the admin dashboard.',
         ]);
 
+        // Create activity permissions
+        Permission::create([
+            'name' => 'read-activity',
+            'display_name' => 'Read activity',
+            'description' => 'Able to read activity for anything.',
+        ]);
+        Permission::create([
+            'name' => 'read-user-activity',
+            'display_name' => 'Read user activity',
+            'description' => 'Able to read activity for a user.',
+        ]);
+        Permission::create([
+            'name' => 'read-role-activity',
+            'display_name' => 'Read role activity',
+            'description' => 'Able to read activity for a role.',
+        ]);
+
         // Create roles and give permissions
         $admin = Role::create([
             'name' => 'admin',
@@ -136,22 +153,23 @@ class PermissionsTableSeeder extends Seeder
         ]);
         $admin->givePermissionTo('access-admin-dashboard');
 
-        $userManager = Role::create([
+        $roleManager = Role::create([
             'name' => 'user-manager',
             'display_name' => 'User Manager',
             'description' => 'Able to read and modify users.',
         ]);
-        $userManager->givePermissionTo('create-users');
-        $userManager->givePermissionTo('read-users');
-        $userManager->givePermissionTo('update-users');
-        $userManager->givePermissionTo('trash-users');
-        $userManager->givePermissionTo('restore-users');
-        $userManager->givePermissionTo('delete-users');
-        $userManager->givePermissionTo('assign-user-roles');
-        $userManager->givePermissionTo('remove-user-roles');
-        $userManager->givePermissionTo('give-user-permissions');
-        $userManager->givePermissionTo('revoke-user-permissions');
-        $userManager->givePermissionTo('recieve-admin-user-notifications');
+        $roleManager->givePermissionTo('create-users');
+        $roleManager->givePermissionTo('read-users');
+        $roleManager->givePermissionTo('update-users');
+        $roleManager->givePermissionTo('trash-users');
+        $roleManager->givePermissionTo('restore-users');
+        $roleManager->givePermissionTo('delete-users');
+        $roleManager->givePermissionTo('assign-user-roles');
+        $roleManager->givePermissionTo('remove-user-roles');
+        $roleManager->givePermissionTo('give-user-permissions');
+        $roleManager->givePermissionTo('revoke-user-permissions');
+        $roleManager->givePermissionTo('recieve-admin-user-notifications');
+        $roleManager->givePermissionTo('read-user-activity');
 
         $userManager = Role::create([
             'name' => 'role-manager',
@@ -165,5 +183,15 @@ class PermissionsTableSeeder extends Seeder
         $userManager->givePermissionTo('read-permissions');
         $userManager->givePermissionTo('give-role-permissions');
         $userManager->givePermissionTo('revoke-role-permissions');
+        $userManager->givePermissionTo('read-role-activity');
+
+        $activityManager = Role::create([
+            'name' => 'activity-manager',
+            'display_name' => 'Activity Manager',
+            'description' => 'Able to read all activity.',
+        ]);
+        $activityManager->givePermissionTo('read-activity');
+        $activityManager->givePermissionTo('read-user-activity');
+        $activityManager->givePermissionTo('read-role-activity');
     }
 }

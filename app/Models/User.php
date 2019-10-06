@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasActivity;
 use App\Traits\HasUuid;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -12,7 +13,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasRoles, HasUuid, Notifiable, SoftDeletes;
+    use HasApiTokens, HasRoles, HasUuid, Notifiable, SoftDeletes, HasActivity;
 
     /**
      * The searchable columns.
@@ -70,6 +71,16 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $dates = [
         'created_at', 'updated_at', 'deleted_at', 'email_verified_at',
     ];
+
+    /**
+     * Get the full name of the user
+     *
+     * @return bool
+     */
+    public function getNameAttribute()
+    {
+        return $this->first_name.' '.$this->last_name;
+    }
 
     /**
      * Get the user who created this.
