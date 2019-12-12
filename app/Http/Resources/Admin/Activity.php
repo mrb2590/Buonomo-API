@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resource\Admin;
+namespace App\Http\Resources\Admin;
 
 use App\Http\Resources\Admin\Role as RoleResource;
 use App\Http\Resources\Admin\User as UserResource;
