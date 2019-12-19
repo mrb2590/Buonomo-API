@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Listeners\Admin\User;
+namespace App\Listeners\Notify\Admin\User;
 
 use App\Models\Permission;
 use Illuminate\Auth\Events\Verified;
