@@ -4,9 +4,8 @@ namespace App\Listeners\Log\User;
 
 use App\Models\User;
 use Illuminate\Auth\Events\Login as LoginEvent;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class Login implements ShouldQueue
+class Login
 {
     /**
      * Create the event listener.

@@ -3,9 +3,8 @@
 namespace App\Listeners\Log\Role;
 
 use App\Events\Role\Deleted as DeletedEvent;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class Deleted implements ShouldQueue
+class Deleted
 {
     /**
      * Create the event listener.

@@ -4,9 +4,8 @@ namespace App\Listeners\Log\User;
 
 use App\Models\User;
 use Illuminate\Auth\Events\Attempting as AttemptedLoginEvent;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class AttemptedLogin implements ShouldQueue
+class AttemptedLogin
 {
     /**
      * Create the event listener.

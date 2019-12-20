@@ -3,9 +3,8 @@
 namespace App\Listeners\Log\Role;
 
 use App\Events\Role\Updated as UpdatedEvent;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class Updated implements ShouldQueue
+class Updated
 {
     /**
      * Create the event listener.

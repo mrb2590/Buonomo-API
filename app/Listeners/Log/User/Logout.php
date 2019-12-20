@@ -4,9 +4,8 @@ namespace App\Listeners\Log\User;
 
 use App\Models\User;
 use Illuminate\Auth\Events\Logout as LogoutEvent;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class Logout implements ShouldQueue
+class Logout
 {
     /**
      * Create the event listener.

@@ -4,9 +4,8 @@ namespace App\Listeners\Log\User;
 
 use App\Models\User;
 use Illuminate\Auth\Events\Registered as RegisteredEvent;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class Registered implements ShouldQueue
+class Registered
 {
     /**
      * Create the event listener.

@@ -3,9 +3,8 @@
 namespace App\Listeners\Log\User;
 
 use App\Events\User\Trashed as TrashedEvent;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class Trashed implements ShouldQueue
+class Trashed
 {
     /**
      * Create the event listener.

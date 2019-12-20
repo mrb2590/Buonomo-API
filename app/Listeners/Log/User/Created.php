@@ -3,9 +3,8 @@
 namespace App\Listeners\Log\User;
 
 use App\Events\User\Created as CreatedEvent;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class Created implements ShouldQueue
+class Created
 {
     /**
      * Create the event listener.

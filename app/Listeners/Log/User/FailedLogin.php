@@ -4,9 +4,8 @@ namespace App\Listeners\Log\User;
 
 use App\Models\User;
 use Illuminate\Auth\Events\Failed as FailedLoginEvent;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class FailedLogin implements ShouldQueue
+class FailedLogin
 {
     /**
      * Create the event listener.

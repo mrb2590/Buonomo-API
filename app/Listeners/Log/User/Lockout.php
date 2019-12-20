@@ -4,9 +4,8 @@ namespace App\Listeners\Log\User;
 
 use App\Models\User;
 use Illuminate\Auth\Events\Lockout as LockoutEvent;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class Lockout implements ShouldQueue
+class Lockout
 {
     /**
      * Create the event listener.

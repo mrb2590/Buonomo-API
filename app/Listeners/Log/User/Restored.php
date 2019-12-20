@@ -3,9 +3,8 @@
 namespace App\Listeners\Log\User;
 
 use App\Events\User\Restored as RestoredEvent;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class Restored implements ShouldQueue
+class Restored
 {
     /**
      * Create the event listener.

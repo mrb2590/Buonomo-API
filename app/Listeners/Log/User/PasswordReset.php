@@ -4,9 +4,8 @@ namespace App\Listeners\Log\User;
 
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset as PasswordResetEvent;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class PasswordReset implements ShouldQueue
+class PasswordReset
 {
     /**
      * Create the event listener.

@@ -3,9 +3,8 @@
 namespace App\Listeners\Log\User;
 
 use App\Events\User\Verified as VerifiedEvent;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class Verified implements ShouldQueue
+class Verified
 {
     /**
      * Create the event listener.

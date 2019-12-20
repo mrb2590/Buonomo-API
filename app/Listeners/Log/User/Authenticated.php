@@ -4,9 +4,8 @@ namespace App\Listeners\Log\User;
 
 use App\Models\User;
 use Illuminate\Auth\Events\Authenticated as AuthenticatedEvent;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class Authenticated implements ShouldQueue
+class Authenticated
 {
     /**
      * Create the event listener.
