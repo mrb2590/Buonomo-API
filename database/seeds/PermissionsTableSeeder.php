@@ -153,37 +153,37 @@ class PermissionsTableSeeder extends Seeder
         ]);
         $admin->givePermissionTo('access-admin-dashboard');
 
-        $roleManager = Role::create([
+        $userManager = Role::create([
             'name' => 'user-manager',
             'display_name' => 'User Manager',
             'description' => 'Able to read and modify users.',
         ]);
-        $roleManager->givePermissionTo('create-users');
-        $roleManager->givePermissionTo('read-users');
-        $roleManager->givePermissionTo('update-users');
-        $roleManager->givePermissionTo('trash-users');
-        $roleManager->givePermissionTo('restore-users');
-        $roleManager->givePermissionTo('delete-users');
-        $roleManager->givePermissionTo('assign-user-roles');
-        $roleManager->givePermissionTo('remove-user-roles');
-        $roleManager->givePermissionTo('give-user-permissions');
-        $roleManager->givePermissionTo('revoke-user-permissions');
-        $roleManager->givePermissionTo('recieve-admin-user-notifications');
-        $roleManager->givePermissionTo('read-user-activity');
+        $userManager->givePermissionTo('create-users');
+        $userManager->givePermissionTo('read-users');
+        $userManager->givePermissionTo('update-users');
+        $userManager->givePermissionTo('trash-users');
+        $userManager->givePermissionTo('restore-users');
+        $userManager->givePermissionTo('delete-users');
+        $userManager->givePermissionTo('assign-user-roles');
+        $userManager->givePermissionTo('remove-user-roles');
+        $userManager->givePermissionTo('give-user-permissions');
+        $userManager->givePermissionTo('revoke-user-permissions');
+        $userManager->givePermissionTo('recieve-admin-user-notifications');
+        $userManager->givePermissionTo('read-user-activity');
 
-        $userManager = Role::create([
+        $roleManager = Role::create([
             'name' => 'role-manager',
             'display_name' => 'Role Manager',
             'description' => 'Able to read and modify roles.',
         ]);
-        $userManager->givePermissionTo('create-roles');
-        $userManager->givePermissionTo('read-roles');
-        $userManager->givePermissionTo('update-roles');
-        $userManager->givePermissionTo('delete-roles');
-        $userManager->givePermissionTo('read-permissions');
-        $userManager->givePermissionTo('give-role-permissions');
-        $userManager->givePermissionTo('revoke-role-permissions');
-        $userManager->givePermissionTo('read-role-activity');
+        $roleManager->givePermissionTo('create-roles');
+        $roleManager->givePermissionTo('read-roles');
+        $roleManager->givePermissionTo('update-roles');
+        $roleManager->givePermissionTo('delete-roles');
+        $roleManager->givePermissionTo('read-permissions');
+        $roleManager->givePermissionTo('give-role-permissions');
+        $roleManager->givePermissionTo('revoke-role-permissions');
+        $roleManager->givePermissionTo('read-role-activity');
 
         $activityManager = Role::create([
             'name' => 'activity-manager',

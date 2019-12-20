@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Events\User\Created;
+use App\Events\User\Deleted;
 use App\Events\User\Updated;
 use App\Events\User\Verified;
 use App\Http\Controllers\Controller;

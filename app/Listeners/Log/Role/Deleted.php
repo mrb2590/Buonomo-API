@@ -27,7 +27,7 @@ class Deleted
         $log = 'Role "'.$event->role->display_name.'" was deleted';
 
         if ($event->deletedBy) {
-            $log -= ' by '.$event->deletedBy->name;
+            $log .= ' by '.$event->deletedBy->name;
         }
 
         activity('roles')

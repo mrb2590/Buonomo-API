@@ -89,7 +89,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function created_by()
     {
-        return $this->belongsTo(Folder::class);
+        return $this->belongsTo(User::class);
     }
 
     /**
@@ -99,7 +99,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function updated_by()
     {
-        return $this->belongsTo(Folder::class);
+        return $this->belongsTo(User::class);
     }
 
     /**
