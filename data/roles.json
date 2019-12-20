@@ -1,0 +1,50 @@
+[
+    {
+        "name": "Administrator",
+        "description": "Able to acces basic admin features.",
+        "permissions": [
+            "access-admin-dashboard"
+        ]
+    },
+    {
+        "name": "User Manager",
+        "description": "Manages users of the system.",
+        "permissions": [
+            "create-users",
+            "read-users",
+            "update-users",
+            "trash-users",
+            "restore-users",
+            "delete-users",
+            "assign-user-roles",
+            "remove-user-roles",
+            "give-user-permissions",
+            "revoke-user-permissions",
+            "recieve-admin-user-notifications",
+            "read-user-activity"
+        ]
+    },
+    {
+        "name": "Role Manager",
+        "description": "Manages roles and permissions in the system.",
+        "permissions": [
+            "create-roles",
+            "read-roles",
+            "update-roles",
+            "delete-roles",
+            "read-permissions",
+            "give-role-permissions",
+            "revoke-role-permissions",
+            "read-role-activity"
+        ]
+    },
+    {
+        "name": "Activity Manager",
+        "description": "Manages all activity in the system.",
+        "permissions": [
+            "read-activity",
+            "read-user-activity",
+            "read-role-activity"
+        ]
+    }
+]

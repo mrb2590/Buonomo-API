@@ -1,0 +1,90 @@
+[
+    {
+        "name": "Create users",
+        "description": "The ability to create new users in the system."
+    },
+    {
+        "name": "Read users",
+        "description": "The ability to read all users in the system."
+    },
+    {
+        "name": "Update users",
+        "description": "The ability to update any user in the system."
+    },
+    {
+        "name": "Trash users",
+        "description": "The ability to trash any user in the system."
+    },
+    {
+        "name": "Restore users",
+        "description": "The ability to restore any trashed user in the system."
+    },
+    {
+        "name": "Delete users",
+        "description": "The ability to permanently delete any user in the system."
+    },
+    {
+        "name": "Create roles",
+        "description": "The ability to create new roles in the system."
+    },
+    {
+        "name": "Read roles",
+        "description": "The ability to read all roles in the system."
+    },
+    {
+        "name": "Update roles",
+        "description": "The ability to update any role in the system."
+    },
+    {
+        "name": "Delete roles",
+        "description": "The ability to permanently delete any role in the system."
+    },
+    {
+        "name": "Read permissions",
+        "description": "The ability to read all permissions in the system."
+    },
+    {
+        "name": "Assign user roles",
+        "description": "The ability to roles to any user."
+    },
+    {
+        "name": "Remove user roles",
+        "description": "The ability to remove roles from any user."
+    },
+    {
+        "name": "Give user permissions",
+        "description": "The ability to give permissions to any user."
+    },
+    {
+        "name": "Revoke user permissions",
+        "description": "The ability to revoke permissions from any user."
+    },
+    {
+        "name": "Give role permissions",
+        "description": "The ability to give permissions to any role."
+    },
+    {
+        "name": "Revoke role permissions",
+        "description": "The ability to Revoke permissions from any role."
+    },
+    {
+        "name": "Recieve admin user notifications",
+        "description": "The ability to receive admin notifications regarding users."
+    },
+    {
+        "name": "Access admin dashboard",
+        "description": "The ability to access the admin dashboard."
+    },
+    {
+        "name": "Read activity",
+        "description": "The ability to read all activity in the system."
+    },
+    {
+        "name": "Read user activity",
+        "description": "The ability to read all user activity in the system."
+    },
+    {
+        "name": "Read role activity",
+        "description": "The ability to read all role activity in the system."
+    }
+]
