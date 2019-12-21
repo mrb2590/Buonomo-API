@@ -2,8 +2,8 @@
 
 namespace App\Listeners\Notify\Admin\User;
 
+use App\Events\User\Verified;
 use App\Models\Permission;
-use Illuminate\Auth\Events\Verified;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class SendUserVerifiedNotification implements ShouldQueue
