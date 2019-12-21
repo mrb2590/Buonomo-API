@@ -5,10 +5,6 @@
 @task('deploy', ['on' => 'prod', 'confirm' => true])
     cd /var/www/sites/buonomo-api
 
-    @if ($branch)
-        git pull origin {{ $branch }}
-    @endif
-
     php artisan down
 
     php artisan view:clear
@@ -17,7 +13,11 @@
 
     php artisan route:clear
 
-    git pull origin master --force
+    @if ($branch)
+        git pull origin {{ $branch }}
+    @else
+        git pull origin master --force
+    @endif
 
     php artisan migrate --force
 
