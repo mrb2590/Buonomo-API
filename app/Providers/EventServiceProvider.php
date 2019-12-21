@@ -42,6 +42,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         \Illuminate\Auth\Events\Lockout::class => [
             \App\Listeners\Log\User\Lockout::class,
+            \App\Listeners\Notify\SendLockoutNotification::class,
         ],
 
         // User model events
