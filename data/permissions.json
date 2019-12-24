@@ -92,6 +92,10 @@
         "description": "The ability to receive motion notifications."
     },
     {
+        "name": "Create motion videos",
+        "description": "The ability to create motion videos in the system."
+    },
+    {
         "name": "Read motion videos",
         "description": "The ability to read all motion videos in the system."
     },
