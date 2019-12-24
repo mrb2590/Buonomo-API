@@ -86,5 +86,17 @@
     {
         "name": "Read role activity",
         "description": "The ability to read all role activity in the system."
+    },
+    {
+        "name": "Recieve motion notifications",
+        "description": "The ability to receive motion notifications."
+    },
+    {
+        "name": "Read motion videos",
+        "description": "The ability to read all motion videos in the system."
+    },
+    {
+        "name": "Delete motion videos",
+        "description": "The ability to permanently delete any motion video in the system."
     }
 ]

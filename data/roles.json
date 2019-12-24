@@ -39,6 +39,16 @@
         ]
     },
     {
+        "name": "Motion Manager",
+        "description": "Manages motion cameras in the system.",
+        "permissions": [
+            "create-motion-videos",
+            "read-motion-videos",
+            "delete-motion-videos",
+            "recieve-motion-notifications"
+        ]
+    },
+    {
         "name": "Activity Manager",
         "description": "Manages all activity in the system.",
         "permissions": [
