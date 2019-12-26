@@ -39,6 +39,26 @@ class Role extends SpatieRole
     protected $fillable = ['name', 'display_name', 'description', 'guard_name'];
 
     /**
+     * Get the user who created this.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function created_by()
+    {
+    	return $this->belongsTo(User::class, 'created_by_id');
+    }
+
+    /**
+     * Get the user who last updated this.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function updated_by()
+    {
+    	return $this->belongsTo(User::class, 'updated_by_id');
+    }
+
+    /**
      * Delete the model from the database.
      *
      * @return bool|null
